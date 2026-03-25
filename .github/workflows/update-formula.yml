@@ -1,0 +1,63 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [formula-update]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate payload
+        run: |
+          echo "formula : ${{ github.event.client_payload.formula }}"
+          echo "version : ${{ github.event.client_payload.version }}"
+          echo "sha256  : ${{ github.event.client_payload.sha256 }}"
+          if [[ -z "${{ github.event.client_payload.formula }}" || \
+                -z "${{ github.event.client_payload.version }}" || \
+                -z "${{ github.event.client_payload.sha256 }}" ]]; then
+            echo "::error::Missing payload fields"
+            exit 1
+          fi
+
+      - name: Patch formula
+        env:
+          FORMULA: ${{ github.event.client_payload.formula }}
+          VERSION: ${{ github.event.client_payload.version }}
+          SHA256:  ${{ github.event.client_payload.sha256 }}
+        run: |
+          set -euo pipefail
+          FILE="Formula/${FORMULA}.rb"
+
+          if [[ ! -f "$FILE" ]]; then
+            echo "::error::Formula not found: $FILE"
+            exit 1
+          fi
+
+          # Derive tarball URL from repo name (formula name == repo name)
+          TARBALL="https://github.com/fusionAIze/${FORMULA}/archive/refs/tags/v${VERSION}.tar.gz"
+
+          sed -i \
+            -e "s|url \".*\"|url \"${TARBALL}\"|" \
+            -e "s|sha256 \".*\"|sha256 \"${SHA256}\"|" \
+            "$FILE"
+
+          echo "Patched $FILE → v${VERSION}"
+          grep -E 'url|sha256' "$FILE"
+
+      - name: Commit and push
+        env:
+          FORMULA: ${{ github.event.client_payload.formula }}
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          git config user.name  "fusionAIze Bot"
+          git config user.email "bot@fusionaize.com"
+          git add "Formula/${FORMULA}.rb"
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "chore(${FORMULA}): bump to v${VERSION}"
+          git push
