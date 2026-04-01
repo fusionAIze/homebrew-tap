@@ -1,5 +1,5 @@
 class Faigrid < Formula
-  desc "fusionAIze Grid — AI infrastructure orchestrator for multi-node setups"
+  desc "FusionAIze Grid — AI infrastructure orchestrator for multi-node setups"
   homepage "https://github.com/fusionAIze/faigrid"
   url "https://github.com/fusionAIze/faigrid/archive/refs/tags/v1.6.0.tar.gz"
   sha256 "47a85429d36f878d330ba0867137187d824ed015560c3bd991ad2797da7f084c"
@@ -32,7 +32,7 @@ class Faigrid < Formula
 
   test do
     assert_predicate bin/"faigrid", :executable?
-    assert_predicate libexec/"install.sh", :exist?
-    assert_predicate libexec/"core/workbench/scripts/control.sh", :exist?
+    assert_path_exists libexec/"install.sh"
+    assert_path_exists libexec/"core/workbench/scripts/control.sh"
   end
 end

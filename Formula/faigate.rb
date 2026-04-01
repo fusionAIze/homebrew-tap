@@ -99,7 +99,7 @@ class Faigate < Formula
     working_dir etc/"faigate"
     environment_variables(
       FAIGATE_CONFIG_FILE: etc/"faigate/config.yaml",
-      FAIGATE_DB_PATH: var/"lib/faigate/faigate.db",
+      FAIGATE_DB_PATH:     var/"lib/faigate/faigate.db",
     )
     keep_alive true
     log_path var/"log/faigate/output.log"
