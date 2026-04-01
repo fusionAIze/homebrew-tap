@@ -8,6 +8,8 @@ on:
 jobs:
   test:
     runs-on: macos-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
       - name: Set up Homebrew
@@ -24,6 +26,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install-bundler-gems
       - name: Homebrew Audit
-        run: brew audit --tap fusionaize/tap --new-formula --strict
+        run: brew audit --tap fusionaize/tap --formula --strict
       - name: Homebrew Style
         run: brew style --tap fusionaize/tap

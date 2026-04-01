@@ -37,7 +37,7 @@ Update formulas:
 
 ```bash
 brew update
-brew upgrade faigate
+brew upgrade faigate faigrid
 ```
 
 ---
