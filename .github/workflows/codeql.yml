@@ -22,7 +22,7 @@ jobs:
         language: [ 'ruby' ]
         include:
           - language: ruby
-            build-mode: autobuild
+            build-mode: none
 
     steps:
     - name: Checkout repository
