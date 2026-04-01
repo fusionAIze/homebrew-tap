@@ -4,7 +4,7 @@
 [![Security Audit](https://github.com/fusionAIze/homebrew-tap/actions/workflows/security.yml/badge.svg)](https://github.com/fusionAIze/homebrew-tap/actions/workflows/security.yml)
 [![CodeQL](https://github.com/fusionAIze/homebrew-tap/actions/workflows/codeql.yml/badge.svg)](https://github.com/fusionAIze/homebrew-tap/actions/workflows/codeql.yml)
 
-This is the official Homebrew tap for [fusionAIze](https://github.com/fusionAIze) projects, including:
+This is the official Homebrew tap for [fusionAIze](https://github.com/fusionAIze) products and projects, including:
 
 - **[faigate](https://github.com/fusionAIze/faigate)**: The local-first AI gateway.
 - **[faigrid](https://github.com/fusionAIze/faigrid)**: The sovereign execution substrate for AI-native operations.
