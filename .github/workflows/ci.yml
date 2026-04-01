@@ -28,4 +28,4 @@ jobs:
       - name: Homebrew Audit
         run: brew audit --tap fusionaize/tap --formula --strict
       - name: Homebrew Style
-        run: brew style --tap fusionaize/tap
+        run: brew style fusionaize/tap

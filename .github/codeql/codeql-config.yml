@@ -1,0 +1,13 @@
+name: "Homebrew Tap CodeQL Configuration"
+
+paths:
+  - Formula/
+
+paths-ignore:
+  - .github/workflows/
+  - README.md
+  - .gitignore
+
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
