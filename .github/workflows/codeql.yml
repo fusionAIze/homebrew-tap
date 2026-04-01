@@ -20,6 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'ruby' ]
+        include:
+          - language: ruby
+            build-mode: autobuild
 
     steps:
     - name: Checkout repository
@@ -30,9 +33,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
+        build-mode: ${{ matrix.build-mode }}
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
