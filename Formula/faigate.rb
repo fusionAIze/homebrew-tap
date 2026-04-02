@@ -1,8 +1,8 @@
 class Faigate < Formula
   desc "Local OpenAI-compatible AI gateway for OpenClaw and other AI-native clients"
   homepage "https://github.com/fusionAIze/faigate"
-  url "https://github.com/fusionAIze/faigate/archive/refs/tags/v1.18.0.tar.gz"
-  sha256 "80dab4c0bc389cff326916411b74aaf92b6e8e0546c68de89dc73a027e4c0f31"
+  url "https://github.com/fusionAIze/faigate/archive/refs/tags/v1.20.0.tar.gz"
+  sha256 "c1269e86eeeb25abbb5c1d9bc7c826cae5bda488b87222629960db668d1c65eb"
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faigate.git", branch: "main"
 
