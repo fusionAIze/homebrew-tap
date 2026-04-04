@@ -2,7 +2,7 @@ class Faisignal < Formula
   desc "Observability, monitoring and signal layer for the fusionAIze stack"
   homepage "https://github.com/fusionAIze/faisignal"
   url "https://github.com/fusionAIze/faisignal/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "40f6ee9b5f5c676e122db16dc431b193e0781afa202e407b4b72615746bec871"
+  sha256 "f328fcfe1b71842c50d97a47c3227b88d20bc4e68deb8f45f12370ba92369ffa"
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faisignal.git", branch: "main"
 
