@@ -34,7 +34,7 @@ class Faigrid < Formula
            "python-telegram-bot>=20.0",
            "aiohttp>=3.9"
 
-    # ── grid-messenger: entry point (sources user config) ─────────────────────
+    # ── grid-messenger: daemon entry point (sources user config) ─────────────
     (bin/"faigrid-messenger").write <<~SH
       #!/usr/bin/env bash
       set -euo pipefail
@@ -47,6 +47,13 @@ class Faigrid < Formula
       fi
       exec "#{venv}/bin/python3" \
         "#{libexec}/core/messenger/src/grid_messenger.py" "$@"
+    SH
+
+    # ── fgm: agent-native CLI (thin HTTP wrapper) ─────────────────────────────
+    (bin/"fgm").write <<~SH
+      #!/usr/bin/env bash
+      set -euo pipefail
+      exec "#{libexec}/core/messenger/bin/fgm" "$@"
     SH
   end
 
@@ -70,9 +77,11 @@ class Faigrid < Formula
     assert_predicate bin/"faigrid", :executable?
     assert_predicate bin/"faigrid-workbench", :executable?
     assert_predicate bin/"faigrid-messenger", :executable?
+    assert_predicate bin/"fgm", :executable?
     assert_path_exists libexec/"install.sh"
     assert_path_exists libexec/"core/workbench/scripts/control.sh"
     assert_path_exists libexec/"core/messenger/src/grid_messenger.py"
+    assert_path_exists libexec/"core/messenger/bin/fgm"
     assert_path_exists libexec/"messenger-venv/bin/python3"
   end
 end
