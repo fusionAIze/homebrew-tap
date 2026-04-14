@@ -1,8 +1,8 @@
 class Faigrid < Formula
   desc "fusionAIze Grid — sovereign AI execution substrate for multi-node operations"
   homepage "https://github.com/fusionAIze/faigrid"
-  url "https://github.com/fusionAIze/faigrid/archive/refs/tags/v1.6.2.tar.gz"
-  sha256 "54b8624881753e370ffbe3a125749dc5b9d217f8783410bba66ff288afd0e37f"
+  url "https://github.com/fusionAIze/faigrid/archive/refs/tags/v1.7.0.tar.gz"
+  sha256 "56cc6ecfada29d91bc46f719a38412120a5b3a00f75a9f8bd7b46884d324ecb8"
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faigrid.git", branch: "main"
 
