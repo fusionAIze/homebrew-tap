@@ -2,7 +2,7 @@ class Faigrid < Formula
   desc "fusionAIze Grid — sovereign AI execution substrate for multi-node operations"
   homepage "https://github.com/fusionAIze/faigrid"
   url "https://github.com/fusionAIze/faigrid/archive/refs/tags/v1.6.2.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "54b8624881753e370ffbe3a125749dc5b9d217f8783410bba66ff288afd0e37f"
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faigrid.git", branch: "main"
 
@@ -27,6 +27,7 @@ class Faigrid < Formula
     SH
 
     # ── grid-messenger: Python venv + dependencies ─────────────────────────────
+    python3 = Formula["python@3.12"].opt_bin/"python3"
     venv = libexec/"messenger-venv"
     system python3, "-m", "venv", venv
     system venv/"bin/pip", "install", "--quiet",
