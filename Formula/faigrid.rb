@@ -27,7 +27,7 @@ class Faigrid < Formula
     SH
 
     # ── grid-messenger: Python venv + dependencies ─────────────────────────────
-    python3 = Formula["python@3.12"].opt_bin/"python3"
+    python3 = Formula["python@3.12"].opt_bin/"python3.12"
     venv = libexec/"messenger-venv"
     system python3, "-m", "venv", venv
     system venv/"bin/pip", "install", "--quiet",
