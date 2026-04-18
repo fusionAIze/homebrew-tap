@@ -6,21 +6,21 @@ class Faigate < Formula
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faigate.git", branch: "main"
 
-  depends_on "rust" => :build
   depends_on "python@3.12"
 
   def install
     python = Formula["python@3.12"].opt_bin/"python3.12"
 
-    # Build native Python extensions from source with extra Mach-O header
-    # space so Homebrew's linkage fixups do not trip over vendored wheels.
-    ENV["PIP_NO_BINARY"] = "pydantic-core,watchfiles"
-    ENV.append "RUSTFLAGS", " -C link-arg=-Wl,-headerpad_max_install_names"
+    # Keep the headerpad flags for any extension we _do_ end up building from
+    # source, but prefer wheels whenever PyPI offers them. Without this,
+    # `brew upgrade faigate` spent 3–5 minutes compiling pydantic-core from
+    # source on every run. Wheels for pydantic-core ship with sufficient
+    # headerpad space and pass Homebrew's linkage audit out of the box.
     ENV.append "LDFLAGS", " -Wl,-headerpad_max_install_names"
 
     system python, "-m", "venv", libexec
     system libexec/"bin/pip", "install", "--upgrade", "pip", "setuptools", "wheel"
-    system libexec/"bin/pip", "install", buildpath
+    system libexec/"bin/pip", "install", "--prefer-binary", buildpath
 
     pkgshare.install buildpath.children
 
