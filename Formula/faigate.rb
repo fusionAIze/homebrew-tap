@@ -22,18 +22,6 @@ class Faigate < Formula
     system libexec/"bin/pip", "install", "--upgrade", "pip", "setuptools", "wheel"
     system libexec/"bin/pip", "install", "--prefer-binary", buildpath
 
-    # pip places wheel-shipped extensions with an ad-hoc, linker-signed
-    # signature; Homebrew then rewrites library paths inside them, which
-    # invalidates that signature. On Apple Silicon macOS refuses to map an
-    # invalidated page at all: the process is SIGKILLed during dlopen with
-    # CODESIGNING / Invalid Page and produces no traceback at all, so the
-    # failure reads like a crash with no cause. Re-sign everything we placed.
-    if OS.mac?
-      Dir.glob("#{libexec}/lib/python*/site-packages/**/*.{so,dylib}").each do |lib|
-        system "/usr/bin/codesign", "--force", "--sign", "-", lib
-      end
-    end
-
     pkgshare.install buildpath.children
 
     (bin/"faigate").write <<~SH
@@ -95,6 +83,21 @@ class Faigate < Formula
   end
 
   def post_install
+    # Homebrew rewrites library paths in installed binaries AFTER `install`
+    # returns, which invalidates the ad-hoc signature wheel-shipped extensions
+    # carry. On Apple Silicon macOS then refuses to map the modified page: the
+    # process is SIGKILLed during dlopen with CODESIGNING / Invalid Page and
+    # emits no traceback, so it reads as a crash with no cause. Signing inside
+    # `install` is too early — it runs before the rewriting — which is why this
+    # lives here. Seen on the 2.8.0 upgrade: pydantic_core and uvloop.
+    if OS.mac?
+      Dir.glob("#{libexec}/lib/python*/site-packages/**/*.{so,dylib}").each do |lib|
+        next if quiet_system "/usr/bin/codesign", "--verify", lib
+
+        system "/usr/bin/codesign", "--force", "--sign", "-", lib
+      end
+    end
+
     (etc/"faigate").mkpath
     (var/"lib/faigate").mkpath
     (var/"log/faigate").mkpath
