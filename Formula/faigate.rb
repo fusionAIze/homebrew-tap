@@ -22,6 +22,18 @@ class Faigate < Formula
     system libexec/"bin/pip", "install", "--upgrade", "pip", "setuptools", "wheel"
     system libexec/"bin/pip", "install", "--prefer-binary", buildpath
 
+    # pip places wheel-shipped extensions with an ad-hoc, linker-signed
+    # signature; Homebrew then rewrites library paths inside them, which
+    # invalidates that signature. On Apple Silicon macOS refuses to map an
+    # invalidated page at all: the process is SIGKILLed during dlopen with
+    # CODESIGNING / Invalid Page and produces no traceback at all, so the
+    # failure reads like a crash with no cause. Re-sign everything we placed.
+    if OS.mac?
+      Dir.glob("#{libexec}/lib/python*/site-packages/**/*.{so,dylib}").each do |lib|
+        system "/usr/bin/codesign", "--force", "--sign", "-", lib
+      end
+    end
+
     pkgshare.install buildpath.children
 
     (bin/"faigate").write <<~SH
