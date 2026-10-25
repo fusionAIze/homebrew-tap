@@ -6,21 +6,38 @@ class Faigate < Formula
   license "Apache-2.0"
   head "https://github.com/fusionAIze/faigate.git", branch: "main"
 
+  depends_on "rust" => :build
   depends_on "python@3.12"
 
   def install
     python = Formula["python@3.12"].opt_bin/"python3.12"
 
-    # Keep the headerpad flags for any extension we _do_ end up building from
-    # source, but prefer wheels whenever PyPI offers them. Without this,
-    # `brew upgrade faigate` spent 3–5 minutes compiling pydantic-core from
-    # source on every run. Wheels for pydantic-core ship with sufficient
-    # headerpad space and pass Homebrew's linkage audit out of the box.
+    # macOS packaging guard — DO NOT REMOVE.
+    #
+    # The previous "prefer wheels for everything" path silently regressed the
+    # v1.2.2 hardening. Prebuilt pydantic-core / watchfiles wheels are linked
+    # upstream without extra Mach-O headerpad space, so Homebrew's post-install
+    # `install_name_tool -id` rewrite then fails with:
+    #   "Failed changing dylib ID of ... pydantic_core/_pydantic_core.cpython-
+    #    312-darwin.so ... Updated load commands do not fit in the header ...
+    #    needs to be relinked, possibly with -headerpad_max_install_names"
+    # `brew upgrade fusionaize/tap/faigate` printed that on every install in
+    # v2.3.0. The runtime happened to keep working, which masked it.
+    #
+    # The fix is to force a source build of those two packages with the
+    # headerpad linker flag. The 3-5 min cargo cost is the price of a clean
+    # linkage audit. Do not switch back to `--prefer-binary` until pydantic-core
+    # upstream ships wheels with sufficient headerpad. See:
+    # https://github.com/fusionAIze/faigate/blob/main/docs/PUBLISHING.md#macos-packaging-guard
+    ENV["PIP_NO_BINARY"] = "pydantic-core,watchfiles"
+    ENV.append "RUSTFLAGS", " -C link-arg=-Wl,-headerpad_max_install_names"
     ENV.append "LDFLAGS", " -Wl,-headerpad_max_install_names"
 
     system python, "-m", "venv", libexec
     system libexec/"bin/pip", "install", "--upgrade", "pip", "setuptools", "wheel"
-    system libexec/"bin/pip", "install", "--prefer-binary", buildpath
+    # NB: no `--prefer-binary` — it would override PIP_NO_BINARY for the two
+    # packages that actually need source builds.
+    system libexec/"bin/pip", "install", buildpath
 
     pkgshare.install buildpath.children
 
